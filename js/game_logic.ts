@@ -107,7 +107,7 @@ class Game {
 	private message = document.getElementById('scoreboard__message');
 	private board = new SquareRow([this.p1, this.p2, this.p3, this.p4, this.p5, this.p6, this.p7, this.p8, this.p9]);
 	private playerIndicators = document.getElementsByClassName('scoreboard__player-turn-indicator');
-	
+
 	/** 
 	win states is an array of {@linkcode row} objects used to see if the game has been won. 
 
@@ -148,7 +148,7 @@ class Game {
 		this.turn = 0;
 		this.updateScoreboard();
 		this.setWinMessage('');
-		this.gameLog();
+		// this.gameLog();
 		const strikethroughLines = document.getElementsByClassName('gameboard__strikethrough')
 		while (strikethroughLines.length > 0) {
 			this.gameboardElement?.removeChild(strikethroughLines[0])
@@ -172,7 +172,7 @@ class Game {
 				this.isPlayer1sTurn = !this.isPlayer1sTurn;
 				this.turn++;
 				_clicked.placeMark(valueToMark);
-				this.gameLog();
+				// this.gameLog();
 				this.updateScoreboard();
 
 				let backgroundClasses: string[] = [];
@@ -237,7 +237,8 @@ class Game {
 	}
 
 	/**
-	 *Outputs table that represents the game state for debugging:
+	 * Outputs table that represents the game state for debugging:
+	 * call game.gameLog() from the console!
 	 *
 	 * p1 | p2 | p3  
 	 * p4 | p5 | p6   
