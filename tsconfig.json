@@ -4,8 +4,7 @@
       "strict": true,
       "module": "commonjs",
       "noImplicitAny": true,
-      "preserveConstEnums": true,
-      "sourceMap": true
+      "preserveConstEnums": true
     },
     "files": [
       "./js/game_logic.ts"
