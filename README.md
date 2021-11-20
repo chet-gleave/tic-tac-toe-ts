@@ -1,5 +1,5 @@
 # tic-tac-toe-ts
-
+[Live Demo](https://chet-gleave.github.io/tic-tac-toe-ts/)  
 tic-tac-toe-ts is a demonstration of my ability to write TypeScript by creating a game of Tic-tac-toe.
 ![screenshot of game](./images/screenshot.PNG)
 
