@@ -38,6 +38,7 @@ class Square {
 /**
  * class used to evaluate win conditions and iterate through child {@linkcode Square} objects
  * @param _squares {@linkcode Square} array to operate on
+ * @param _strikethroughStyleClass css style class from ../css/styles.scss
  */
 class SquareRow {
     constructor(_squares, _strikethroughStyleClass) {
@@ -48,7 +49,7 @@ class SquareRow {
      * Loops through child squares and concatenates values - used to evaluate win conditions
      * @returns {string} joined values of stored squares ex: 'XOX'
      */
-    fullRow() {
+    getFullRow() {
         return this.squares.map((square) => square.value).join("");
     }
     /**
@@ -56,6 +57,12 @@ class SquareRow {
      */
     highlight() {
         this.squares.forEach(square => { var _a; return (_a = square.element) === null || _a === void 0 ? void 0 : _a.classList.add('gameboard__square_highlight'); });
+    }
+    /**
+     * @returns returns subarray of {@linkcode Square} children that aren't marked.
+     */
+    getUnmarked() {
+        return this.squares.filter(square => square.marked == false);
     }
     /**
      * resets square state, removes any style changes that may have been applied from the last game
@@ -66,6 +73,43 @@ class SquareRow {
             square.reset();
             (_a = square.element) === null || _a === void 0 ? void 0 : _a.classList.remove('gameboard__square_highlight');
         });
+    }
+}
+/**
+ * class used to represent a second, artificial player
+ * @param _WinConditionsToEvaluate reference to the games win state conditions
+ */
+class Bot {
+    constructor(_WinConditionsToEvaluate) {
+        this.WinConditionsToEvaluate = _WinConditionsToEvaluate;
+    }
+    generateMove(game) {
+        let returnValue = null;
+        const availableSquares = game.getUnmarked();
+        // set random choice to start: 
+        returnValue = this.getRandomSquare(availableSquares);
+        // select moves that would progress the bot to victory:
+        const movesToProgress = this.WinConditionsToEvaluate.filter(condition => condition.getFullRow() == 'O');
+        // select moves that would win the game 
+        const movesToWin = this.WinConditionsToEvaluate.filter(condition => condition.getFullRow() == 'OO');
+        // select blocking moves that would lose the game to not play
+        const movesToBlockOpponent = this.WinConditionsToEvaluate.filter(condition => condition.getFullRow() == 'XX');
+        if (movesToProgress.length) {
+            const i = this.getRandomIndex(movesToProgress.length);
+            const potentialMoves = movesToProgress[i].getUnmarked();
+            returnValue = this.getRandomSquare(potentialMoves);
+        }
+        if (movesToBlockOpponent[0])
+            returnValue = movesToBlockOpponent[0].getUnmarked()[0];
+        if (movesToWin[0])
+            returnValue = movesToWin[0].getUnmarked()[0];
+        return returnValue;
+    }
+    getRandomIndex(length) {
+        return length > 1 ? Math.floor(Math.random() * length) : 0;
+    }
+    getRandomSquare(_squares) {
+        return _squares[this.getRandomIndex(_squares.length)];
     }
 }
 var WinMessages;
@@ -118,10 +162,11 @@ class Game {
             new SquareRow([this.p2, this.p5, this.p8], 'gameboard__strikethrough_squares-2-5-8'),
             new SquareRow([this.p3, this.p6, this.p9], 'gameboard__strikethrough_squares-3-6-9'),
         ];
+        this.AI = new Bot(this.winStates);
         this.board.squares.forEach(square => {
             var _a;
             (_a = square.element) === null || _a === void 0 ? void 0 : _a.addEventListener("click", () => {
-                this.gameLoop(square);
+                this.gameLoop(square, false);
             });
         });
         this.updateScoreboard();
@@ -151,56 +196,65 @@ class Game {
      * * Turn count
      * * Win Condition Evaluation
      * * Score display
-     * @param _clicked square on the gameboard that the user clicked
+     * @param _clicked target square on the gameboard that the user clicked or the bot chose
      */
-    gameLoop(_clicked) {
+    gameLoop(_clicked, _ai) {
         if (!this.gameOver) {
             if (!_clicked.marked) {
                 const valueToMark = this.isPlayer1sTurn ? 'X' : 'O';
-                this.isPlayer1sTurn = !this.isPlayer1sTurn;
-                this.turn++;
-                _clicked.placeMark(valueToMark);
-                // this.gameLog();
-                this.updateScoreboard();
-                let backgroundClasses = [];
-                this.winStates.forEach(condition => {
-                    if (condition.fullRow() == "XXX" || condition.fullRow() == "OOO") {
-                        condition.highlight();
-                        backgroundClasses.push(condition.strikethroughStyleClass);
-                    }
-                    if (condition.fullRow() == "XXX") {
-                        if (!this.gameOver) {
-                            this.gameOver = true;
-                            this.setWinMessage(WinMessages.xWins);
-                            this.isPlayer1sTurn = !this.isPlayer1sTurn;
-                            this.xWinCount++;
-                            if (this.xWinCountElement)
-                                this.xWinCountElement.innerText = this.xWinCount.toString();
-                            this.updateScoreboard();
+                if ((valueToMark === 'X' && _ai === false) || (valueToMark == 'O' && _ai == true)) {
+                    this.isPlayer1sTurn = !this.isPlayer1sTurn;
+                    this.turn++;
+                    _clicked.placeMark(valueToMark);
+                    // this.gameLog();
+                    this.updateScoreboard();
+                    let backgroundClasses = [];
+                    this.winStates.forEach(condition => {
+                        if (condition.getFullRow() == "XXX" || condition.getFullRow() == "OOO") {
+                            condition.highlight();
+                            backgroundClasses.push(condition.strikethroughStyleClass);
                         }
-                    }
-                    else if (condition.fullRow() == "OOO") {
-                        if (!this.gameOver) {
-                            this.gameOver = true;
-                            this.setWinMessage(WinMessages.oWins);
-                            this.isPlayer1sTurn = !this.isPlayer1sTurn;
-                            this.oWinCount++;
-                            if (this.oWinCountElement)
-                                this.oWinCountElement.innerText = this.oWinCount.toString();
-                            this.updateScoreboard();
+                        if (condition.getFullRow() == "XXX") {
+                            if (!this.gameOver) {
+                                this.gameOver = true;
+                                this.setWinMessage(WinMessages.xWins);
+                                this.isPlayer1sTurn = !this.isPlayer1sTurn;
+                                this.xWinCount++;
+                                if (this.xWinCountElement)
+                                    this.xWinCountElement.innerText = this.xWinCount.toString();
+                                this.updateScoreboard();
+                            }
                         }
+                        else if (condition.getFullRow() == "OOO") {
+                            if (!this.gameOver) {
+                                this.gameOver = true;
+                                this.setWinMessage(WinMessages.oWins);
+                                this.isPlayer1sTurn = !this.isPlayer1sTurn;
+                                this.oWinCount++;
+                                if (this.oWinCountElement)
+                                    this.oWinCountElement.innerText = this.oWinCount.toString();
+                                this.updateScoreboard();
+                            }
+                        }
+                    });
+                    if (this.turn == 9 && !this.gameOver) {
+                        this.setWinMessage(WinMessages.draw);
+                        this.gameOver = true;
                     }
-                });
-                if (this.turn == 9 && !this.gameOver) {
-                    this.setWinMessage(WinMessages.draw);
-                    this.gameOver = true;
+                    backgroundClasses.forEach(classToAppend => {
+                        var _a;
+                        const strikethrough = document.createElement("span");
+                        strikethrough.classList.add('gameboard__strikethrough', classToAppend);
+                        (_a = this.gameboardElement) === null || _a === void 0 ? void 0 : _a.appendChild(strikethrough);
+                    });
+                    if (valueToMark === 'X' && !this.gameOver) {
+                        const BotTurn = this.AI.generateMove(this.board);
+                        if (BotTurn)
+                            setTimeout(() => {
+                                this.gameLoop(BotTurn, true);
+                            }, 1000);
+                    }
                 }
-                backgroundClasses.forEach(classToAppend => {
-                    var _a;
-                    const strikethrough = document.createElement("span");
-                    strikethrough.classList.add('gameboard__strikethrough', classToAppend);
-                    (_a = this.gameboardElement) === null || _a === void 0 ? void 0 : _a.appendChild(strikethrough);
-                });
             }
         }
         else {
