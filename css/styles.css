@@ -1,5 +1,6 @@
 body {
-  font-family: "Gochi Hand", cursive;
+  font-family: "Outfit", sans-serif;
+  background-color: #e9c6b4;
 }
 
 p {
@@ -16,31 +17,27 @@ p {
   margin-block-start: 0;
   flex-wrap: wrap;
 }
-#scoreboard .scoreboard__player-container {
-  width: 6em;
-}
 #scoreboard .scoreboard__player-container p.scoreboard__player-turn-indicator {
   box-sizing: border-box;
   width: 100%;
-  border: grey 2px solid;
-  border-radius: 2em;
+  border-bottom: #e9c6b4 3px solid;
   text-align: center;
-  padding: 0.5em;
   font-size: 40px;
 }
 #scoreboard .scoreboard__player-container p.scoreboard__player-turn-indicator.scoreboard__player-turn-indicator_active {
-  color: white;
-  background-color: pink;
+  color: #913a26;
+  border-bottom: #913a26 3px solid;
 }
 #scoreboard .scoreboard__player-container p.scoreboard__player-turn-indicator.scoreboard__player-turn-indicator_won {
+  color: #EB563A;
+  border-bottom-color: #EB563A;
   position: relative;
-  color: white;
-  background-color: #fc90a2;
   animation: lighter 2s infinite;
 }
 @keyframes lighter {
-  50% {
-    background-color: pink;
+  33% {
+    color: #913a26;
+    border-bottom-color: #913a26;
   }
 }
 #scoreboard .scoreboard__score-container {
@@ -65,6 +62,7 @@ p {
   font-size: 2em;
   margin: 0;
   height: 1em;
+  margin-bottom: 1em;
 }
 
 #gameboard {
@@ -82,72 +80,84 @@ p {
   padding: 0;
 }
 #gameboard #gameboard__container .gameboard__square {
+  background-color: #913a26;
   height: 200px;
   width: 200px;
   font-size: 6em;
-  line-height: 2.25;
-  color: black;
-  border-color: transparent;
+  line-height: 1.95;
+  color: #EB563A;
+  text-shadow: 0 7px 0 #FFB600, 0 14px 0 #44A9CC;
+  border-color: #e9c6b4;
+  border-radius: 0.2em;
   border-style: solid;
-  border-width: 2px;
+  border-width: 5px;
   text-align: center;
   user-select: none;
 }
 #gameboard #gameboard__container .gameboard__square:nth-of-type(1) {
-  border-right-color: grey;
-  border-bottom-color: grey;
+  border-right-color: #e9c6b4;
+  border-bottom-color: #e9c6b4;
 }
 #gameboard #gameboard__container .gameboard__square:nth-of-type(2) {
-  border-left-color: grey;
-  border-bottom-color: grey;
-  border-right-color: grey;
+  border-left-color: #e9c6b4;
+  border-bottom-color: #e9c6b4;
+  border-right-color: #e9c6b4;
 }
 #gameboard #gameboard__container .gameboard__square:nth-of-type(3) {
-  border-left-color: grey;
-  border-bottom-color: grey;
+  border-left-color: #e9c6b4;
+  border-bottom-color: #e9c6b4;
 }
 #gameboard #gameboard__container .gameboard__square:nth-of-type(4) {
-  border-top-color: grey;
-  border-right-color: grey;
-  border-bottom-color: grey;
+  border-top-color: #e9c6b4;
+  border-right-color: #e9c6b4;
+  border-bottom-color: #e9c6b4;
 }
 #gameboard #gameboard__container .gameboard__square:nth-of-type(5) {
-  border-color: grey;
+  border-color: #e9c6b4;
 }
 #gameboard #gameboard__container .gameboard__square:nth-of-type(6) {
-  border-top-color: grey;
-  border-left-color: grey;
-  border-bottom-color: grey;
+  border-top-color: #e9c6b4;
+  border-left-color: #e9c6b4;
+  border-bottom-color: #e9c6b4;
 }
 #gameboard #gameboard__container .gameboard__square:nth-of-type(7) {
-  border-top-color: grey;
-  border-right-color: grey;
+  border-top-color: #e9c6b4;
+  border-right-color: #e9c6b4;
 }
 #gameboard #gameboard__container .gameboard__square:nth-of-type(8) {
-  border-left-color: grey;
-  border-right-color: grey;
-  border-top-color: grey;
+  border-left-color: #e9c6b4;
+  border-right-color: #e9c6b4;
+  border-top-color: #e9c6b4;
 }
 #gameboard #gameboard__container .gameboard__square:nth-of-type(9) {
-  border-top-color: grey;
-  border-left-color: grey;
+  border-top-color: #e9c6b4;
+  border-left-color: #e9c6b4;
 }
 #gameboard #gameboard__container .gameboard__square.gameboard__square_playable {
   cursor: pointer;
 }
 #gameboard #gameboard__container .gameboard__square.gameboard__square_highlight {
-  color: #fc90a2;
-  animation: winningRowAnimation 2s infinite;
+  color: #EB563A;
+  animation: winningRowAnimation 1s infinite;
 }
 @keyframes winningRowAnimation {
-  50% {
-    color: pink;
+  33% {
+    color: #44A9CC;
+    text-shadow: 0 7px 0 #EB563A, 0 14px 0 #FFB600;
+  }
+  66% {
+    color: #FFB600;
+    text-shadow: 0 7px 0 #44A9CC, 0 14px 0 #EB563A;
+  }
+  100% {
+    color: #EB563A;
+    text-shadow: 0 7px 0 #FFB600, 0 14px 0 #44A9CC;
   }
 }
 #gameboard .gameboard__strikethrough {
   position: absolute;
   height: 135%;
-  z-index: -1;
+  z-index: 2;
   background-image: url(../images/minus-solid.svg);
   background-repeat: no-repeat;
 }

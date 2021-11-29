@@ -262,6 +262,9 @@ class Game {
 					backgroundClasses.forEach(classToAppend => {
 						const strikethrough = document.createElement("span");
 						strikethrough.classList.add('gameboard__strikethrough', classToAppend);
+						strikethrough.addEventListener("click", () => {
+							this.gameReset();
+						})
 						this.gameboardElement?.appendChild(strikethrough)
 					})
 					if (valueToMark === 'X' && !this.gameOver) {

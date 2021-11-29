@@ -1,8 +1,14 @@
-$border-color: grey;
-$highlight-color: pink;
-$highlight-animation-color: rgb(252, 144, 162);
+$yellow: #FFB600;
+$blue: #44A9CC;
+$scarlet: #EB563A; 
+$peach: #e9c6b4;
+$teal: #50BCB9;
+$brown:#913a26;
+$border-color: $peach;
+
 body {
-    font-family: "Gochi Hand", cursive;
+    font-family: 'Outfit', sans-serif;
+    background-color: $peach;
 }
 
 p {
@@ -20,32 +26,30 @@ p {
     flex-wrap: wrap;
 
     .scoreboard__player-container {
-        width: 6em;
 
         p.scoreboard__player-turn-indicator {
             box-sizing: border-box;
             width: 100%;
-            border: $border-color 2px solid;
-            border-radius: 2em;
+            border-bottom: $border-color 3px solid;
             text-align: center;
-            padding: 0.5em;
             font-size: 40px;
         }
 
         p.scoreboard__player-turn-indicator.scoreboard__player-turn-indicator_active {
-            color: white;
-            background-color: $highlight-color;
+            color: $brown;
+            border-bottom: $brown 3px solid;
         }
 
         p.scoreboard__player-turn-indicator.scoreboard__player-turn-indicator_won {
+            color: $scarlet;
+            border-bottom-color: $scarlet;
             position: relative;
-            color: white;
-            background-color: $highlight-animation-color;
             animation: lighter 2s infinite;
 
             @keyframes lighter {
-                50% {
-                    background-color: $highlight-color;
+                33% {
+                    color: $brown;
+                    border-bottom-color: $brown;
                 }
             }
         }
@@ -76,6 +80,7 @@ p {
         font-size: 2em;
         margin: 0;
         height: 1em;
+        margin-bottom: 1em;
     }
 }
 
@@ -94,14 +99,19 @@ p {
         padding: 0;
 
         .gameboard__square {
+            background-color: $brown;
             height: 200px;
             width: 200px;
             font-size: 6em;
-            line-height: 2.25;
-            color: black;
-            border-color: transparent;
+            line-height: 1.95;
+            color: $scarlet;
+            text-shadow: 
+            0 7px 0 $yellow, 
+            0 14px 0 $blue;
+            border-color: $border-color;
+            border-radius: .2em;
             border-style: solid;
-            border-width: 2px;
+            border-width: 5px;
             text-align: center;
             user-select: none;
         }
@@ -150,12 +160,26 @@ p {
         }
 
         .gameboard__square.gameboard__square_highlight {
-            color: $highlight-animation-color;
-            animation: winningRowAnimation 2s infinite;
-
+            color: $scarlet;
+            animation: winningRowAnimation 1s infinite;
             @keyframes winningRowAnimation {
-                50% {
-                    color: $highlight-color;
+                33% {
+                    color: $blue;
+                    text-shadow: 
+                    0 7px 0 $scarlet, 
+                    0 14px 0 $yellow;
+                }
+                66% {
+                    color: $yellow ;
+                    text-shadow: 
+                    0 7px 0 $blue, 
+                    0 14px 0 $scarlet;
+                }
+                100%{
+                    color: $scarlet;
+                    text-shadow: 
+                    0 7px 0 $yellow, 
+                    0 14px 0 $blue;
                 }
             }
         }
@@ -164,7 +188,7 @@ p {
     .gameboard__strikethrough {
         position: absolute;
         height: 135%;
-        z-index: -1;
+        z-index: 2;
         background-image: url(../images/minus-solid.svg);
         background-repeat: no-repeat;
     }

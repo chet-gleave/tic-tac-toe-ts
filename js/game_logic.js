@@ -245,6 +245,9 @@ class Game {
                         var _a;
                         const strikethrough = document.createElement("span");
                         strikethrough.classList.add('gameboard__strikethrough', classToAppend);
+                        strikethrough.addEventListener("click", () => {
+                            this.gameReset();
+                        });
                         (_a = this.gameboardElement) === null || _a === void 0 ? void 0 : _a.appendChild(strikethrough);
                     });
                     if (valueToMark === 'X' && !this.gameOver) {
