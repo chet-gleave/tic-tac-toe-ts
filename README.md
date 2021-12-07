@@ -14,7 +14,7 @@ This project serves as a showcase of my ability to use TypeScript to maintain co
 - Node.js
 
 ## Testing
-![Test results](./images/testresults.PNG)
+![Test results](./images/testresults.PNG)   
 Unit tests written in Jasmine. To run tests:
 ```bash
 npm install
