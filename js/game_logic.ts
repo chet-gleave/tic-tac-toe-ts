@@ -135,29 +135,30 @@ enum WinMessages {
 }
 
 class Game {
+	public testing = false;
 	// game tiles: 
-	private p1 = new Square('gameboard__square_position-1');
-	private p2 = new Square('gameboard__square_position-2');
-	private p3 = new Square('gameboard__square_position-3');
-	private p4 = new Square('gameboard__square_position-4');
-	private p5 = new Square('gameboard__square_position-5');
-	private p6 = new Square('gameboard__square_position-6');
-	private p7 = new Square('gameboard__square_position-7');
-	private p8 = new Square('gameboard__square_position-8');
-	private p9 = new Square('gameboard__square_position-9');
+	public p1 = new Square('gameboard__square_position-1');
+	public p2 = new Square('gameboard__square_position-2');
+	public p3 = new Square('gameboard__square_position-3');
+	public p4 = new Square('gameboard__square_position-4');
+	public p5 = new Square('gameboard__square_position-5');
+	public p6 = new Square('gameboard__square_position-6');
+	public p7 = new Square('gameboard__square_position-7');
+	public p8 = new Square('gameboard__square_position-8');
+	public p9 = new Square('gameboard__square_position-9');
 	// turn counter:
-	private turn = 0;
+	public turn = 0;
 	// turn boolean:
-	private isPlayer1sTurn = true;
-	private gameOver = false
-	private gameboardElement = document.getElementById('gameboard__container');
-	private xWinCount = 0;
-	private oWinCount = 0;
-	private xWinCountElement = document.getElementById('scoreboard__player-x-score');
-	private oWinCountElement = document.getElementById('scoreboard__player-o-score');
-	private message = document.getElementById('scoreboard__message');
-	private board = new SquareRow([this.p1, this.p2, this.p3, this.p4, this.p5, this.p6, this.p7, this.p8, this.p9]);
-	private playerIndicators = document.getElementsByClassName('scoreboard__player-turn-indicator');
+	public isPlayer1sTurn = true;
+	public gameOver = false
+	public gameboardElement = document.getElementById('gameboard__container');
+	public xWinCount = 0;
+	public oWinCount = 0;
+	public xWinCountElement = document.getElementById('scoreboard__player-x-score');
+	public oWinCountElement = document.getElementById('scoreboard__player-o-score');
+	public message = document.getElementById('scoreboard__message');
+	public board = new SquareRow([this.p1, this.p2, this.p3, this.p4, this.p5, this.p6, this.p7, this.p8, this.p9]);
+	public playerIndicators = document.getElementsByClassName('scoreboard__player-turn-indicator');
 
 	/** 
 	win states is an array of {@linkcode row} objects used to see if the game has been won. 
@@ -178,7 +179,7 @@ class Game {
 		new SquareRow([this.p2, this.p5, this.p8], 'gameboard__strikethrough_squares-2-5-8'),
 		new SquareRow([this.p3, this.p6, this.p9], 'gameboard__strikethrough_squares-3-6-9'),
 	]
-	private AI = new Bot(this.winStates);
+	public AI = new Bot(this.winStates);
 
 	constructor() {
 		this.board.squares.forEach(square => {
@@ -192,7 +193,7 @@ class Game {
 	/**
 	 * resets game state for subsequent games
 	 */
-	private gameReset(): void {
+	public gameReset(): void {
 		this.board.reset();
 		this.isPlayer1sTurn = true;
 		this.gameOver = false;
@@ -267,7 +268,7 @@ class Game {
 						})
 						this.gameboardElement?.appendChild(strikethrough)
 					})
-					if (valueToMark === 'X' && !this.gameOver) {
+					if (valueToMark === 'X' && !this.gameOver && !this.testing) {
 						const BotTurn = this.AI.generateMove(this.board);
 						if (BotTurn) setTimeout(() => {
 							this.gameLoop(BotTurn, true)
@@ -282,11 +283,11 @@ class Game {
 		}
 	}
 
-	private setWinMessage(message: string) {
+	public setWinMessage(message: string) {
 		if (this.message) this.message.innerText = message
 	}
 
-	private updateScoreboard(): void {
+	public updateScoreboard(): void {
 		const mark = `scoreboard__player-${this.isPlayer1sTurn ? 'x' : 'o'}`;
 		const styleClass = this.gameOver ? 'scoreboard__player-turn-indicator_won' : 'scoreboard__player-turn-indicator_active';
 		for (let i = 0; i < this.playerIndicators.length; i++) {
@@ -307,7 +308,7 @@ class Game {
 	 * p4 | p5 | p6   
 	 * p7 | p8 | p9  
 	 */
-	private gameLog() {
+	public gameLog() {
 		console.table([
 			[this.p1.value, this.p2.value, this.p3.value],
 			[this.p4.value, this.p5.value, this.p6.value],

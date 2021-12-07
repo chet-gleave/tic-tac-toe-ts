@@ -7,8 +7,19 @@ This project serves as a showcase of my ability to use TypeScript to maintain co
 ## Technology Used
 - TypeScript
 - Sass
+- Babel
+- Karma
+- Jasmine
 - HTML5
 - Node.js
+
+## Testing
+![Test results](./images/testresults.png)
+Unit tests written in Jasmine. To run tests:
+```bash
+npm install
+npm test
+```
 
 ## Code style 
 BEM — Block Element Modifier
@@ -43,5 +54,6 @@ The SVG used to create the strikethrough effect is the minus icon from Font Awes
 * [Minus Icon | Font Awesome](https://fontawesome.com/v5.15/icons/minus?style=solid)
 * [License](https://fontawesome.com/license)
 
+dependency/index.js is from [karma-babel-preprocessor](https://github.com/babel/karma-babel-preprocessor)
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)

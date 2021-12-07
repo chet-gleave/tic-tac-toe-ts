@@ -120,6 +120,7 @@ var WinMessages;
 })(WinMessages || (WinMessages = {}));
 class Game {
     constructor() {
+        this.testing = false;
         // game tiles: 
         this.p1 = new Square('gameboard__square_position-1');
         this.p2 = new Square('gameboard__square_position-2');
@@ -250,7 +251,7 @@ class Game {
                         });
                         (_a = this.gameboardElement) === null || _a === void 0 ? void 0 : _a.appendChild(strikethrough);
                     });
-                    if (valueToMark === 'X' && !this.gameOver) {
+                    if (valueToMark === 'X' && !this.gameOver && !this.testing) {
                         const BotTurn = this.AI.generateMove(this.board);
                         if (BotTurn)
                             setTimeout(() => {

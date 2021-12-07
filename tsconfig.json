@@ -7,6 +7,7 @@
       "preserveConstEnums": true
     },
     "files": [
-      "./js/game_logic.ts"
+      "./js/game_logic.ts",
+      "./js/game_logic.spec.ts"
     ]
   }
