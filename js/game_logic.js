@@ -1,10 +1,9 @@
-"use strict";
 /**
  * class that represents the individual squares of the gameboard
  * @param _id used to map changes in the square object to the view (element in the DOM), must match ID of corresponding DOM element
  */
-class Square {
-    constructor(_id) {
+var Square = /** @class */ (function () {
+    function Square(_id) {
         this.marked = false;
         this.element = document.getElementById(_id);
         this.value = '';
@@ -13,7 +12,7 @@ class Square {
      * reflects the changes in the object to the view. If called more than once before reset it will not change state/view
      * @param val ('X' | 'O')
      */
-    placeMark(_val) {
+    Square.prototype.placeMark = function (_val) {
         if (!this.marked) {
             this.value = _val;
             this.marked = true;
@@ -22,26 +21,27 @@ class Square {
                 this.element.classList.remove('gameboard__square_playable');
             }
         }
-    }
+    };
     /**
      * resets state for new game, retains link to the html element.
      */
-    reset() {
+    Square.prototype.reset = function () {
         this.value = '';
         this.marked = false;
         if (this.element) {
             this.element.innerText = this.value;
             this.element.classList.add('gameboard__square_playable');
         }
-    }
-}
+    };
+    return Square;
+}());
 /**
  * class used to evaluate win conditions and iterate through child {@linkcode Square} objects
  * @param _squares {@linkcode Square} array to operate on
  * @param _strikethroughStyleClass css style class from ../css/styles.scss
  */
-class SquareRow {
-    constructor(_squares, _strikethroughStyleClass) {
+var SquareRow = /** @class */ (function () {
+    function SquareRow(_squares, _strikethroughStyleClass) {
         this.squares = _squares;
         this.strikethroughStyleClass = _strikethroughStyleClass ? _strikethroughStyleClass : '';
     }
@@ -49,54 +49,55 @@ class SquareRow {
      * Loops through child squares and concatenates values - used to evaluate win conditions
      * @returns {string} joined values of stored squares ex: 'XOX'
      */
-    getFullRow() {
-        return this.squares.map((square) => square.value).join("");
-    }
+    SquareRow.prototype.getFullRow = function () {
+        return this.squares.map(function (square) { return square.value; }).join("");
+    };
     /**
      * Appends style class to show win condition
      */
-    highlight() {
-        this.squares.forEach(square => { var _a; return (_a = square.element) === null || _a === void 0 ? void 0 : _a.classList.add('gameboard__square_highlight'); });
-    }
+    SquareRow.prototype.highlight = function () {
+        this.squares.forEach(function (square) { var _a; return (_a = square.element) === null || _a === void 0 ? void 0 : _a.classList.add('gameboard__square_highlight'); });
+    };
     /**
      * @returns returns subarray of {@linkcode Square} children that aren't marked.
      */
-    getUnmarked() {
-        return this.squares.filter(square => square.marked == false);
-    }
+    SquareRow.prototype.getUnmarked = function () {
+        return this.squares.filter(function (square) { return square.marked == false; });
+    };
     /**
      * resets square state, removes any style changes that may have been applied from the last game
      */
-    reset() {
-        this.squares.forEach(square => {
+    SquareRow.prototype.reset = function () {
+        this.squares.forEach(function (square) {
             var _a;
             square.reset();
             (_a = square.element) === null || _a === void 0 ? void 0 : _a.classList.remove('gameboard__square_highlight');
         });
-    }
-}
+    };
+    return SquareRow;
+}());
 /**
  * class used to represent a second, artificial player
  * @param _WinConditionsToEvaluate reference to the games win state conditions
  */
-class Bot {
-    constructor(_WinConditionsToEvaluate) {
+var Bot = /** @class */ (function () {
+    function Bot(_WinConditionsToEvaluate) {
         this.WinConditionsToEvaluate = _WinConditionsToEvaluate;
     }
-    generateMove(game) {
-        let returnValue = null;
-        const availableSquares = game.getUnmarked();
+    Bot.prototype.generateMove = function (game) {
+        var returnValue = null;
+        var availableSquares = game.getUnmarked();
         // set random choice to start: 
         returnValue = this.getRandomSquare(availableSquares);
         // select moves that would progress the bot to victory:
-        const movesToProgress = this.WinConditionsToEvaluate.filter(condition => condition.getFullRow() == 'O');
+        var movesToProgress = this.WinConditionsToEvaluate.filter(function (condition) { return condition.getFullRow() == 'O'; });
         // select moves that would win the game 
-        const movesToWin = this.WinConditionsToEvaluate.filter(condition => condition.getFullRow() == 'OO');
+        var movesToWin = this.WinConditionsToEvaluate.filter(function (condition) { return condition.getFullRow() == 'OO'; });
         // select blocking moves that would lose the game to not play
-        const movesToBlockOpponent = this.WinConditionsToEvaluate.filter(condition => condition.getFullRow() == 'XX');
+        var movesToBlockOpponent = this.WinConditionsToEvaluate.filter(function (condition) { return condition.getFullRow() == 'XX'; });
         if (movesToProgress.length) {
-            const i = this.getRandomIndex(movesToProgress.length);
-            const potentialMoves = movesToProgress[i].getUnmarked();
+            var i = this.getRandomIndex(movesToProgress.length);
+            var potentialMoves = movesToProgress[i].getUnmarked();
             returnValue = this.getRandomSquare(potentialMoves);
         }
         if (movesToBlockOpponent[0])
@@ -104,22 +105,24 @@ class Bot {
         if (movesToWin[0])
             returnValue = movesToWin[0].getUnmarked()[0];
         return returnValue;
-    }
-    getRandomIndex(length) {
+    };
+    Bot.prototype.getRandomIndex = function (length) {
         return length > 1 ? Math.floor(Math.random() * length) : 0;
-    }
-    getRandomSquare(_squares) {
+    };
+    Bot.prototype.getRandomSquare = function (_squares) {
         return _squares[this.getRandomIndex(_squares.length)];
-    }
-}
+    };
+    return Bot;
+}());
 var WinMessages;
 (function (WinMessages) {
     WinMessages["xWins"] = "X Wins! click game board to reset";
     WinMessages["oWins"] = "O Wins! click game board to reset";
     WinMessages["draw"] = "Draw, click game board to reset";
 })(WinMessages || (WinMessages = {}));
-class Game {
-    constructor() {
+var Game = /** @class */ (function () {
+    function Game() {
+        var _this = this;
         this.testing = false;
         // game tiles: 
         this.p1 = new Square('gameboard__square_position-1');
@@ -164,10 +167,10 @@ class Game {
             new SquareRow([this.p3, this.p6, this.p9], 'gameboard__strikethrough_squares-3-6-9'),
         ];
         this.AI = new Bot(this.winStates);
-        this.board.squares.forEach(square => {
+        this.board.squares.forEach(function (square) {
             var _a;
-            (_a = square.element) === null || _a === void 0 ? void 0 : _a.addEventListener("click", () => {
-                this.gameLoop(square, false);
+            (_a = square.element) === null || _a === void 0 ? void 0 : _a.addEventListener("click", function () {
+                _this.gameLoop(square, false);
             });
         });
         this.updateScoreboard();
@@ -175,7 +178,7 @@ class Game {
     /**
      * resets game state for subsequent games
      */
-    gameReset() {
+    Game.prototype.gameReset = function () {
         var _a;
         this.board.reset();
         this.isPlayer1sTurn = true;
@@ -184,11 +187,11 @@ class Game {
         this.updateScoreboard();
         this.setWinMessage('');
         // this.gameLog();
-        const strikethroughLines = document.getElementsByClassName('gameboard__strikethrough');
+        var strikethroughLines = document.getElementsByClassName('gameboard__strikethrough');
         while (strikethroughLines.length > 0) {
             (_a = this.gameboardElement) === null || _a === void 0 ? void 0 : _a.removeChild(strikethroughLines[0]);
         }
-    }
+    };
     /**
      * Runs each time a square is clicked.
      * Manages the following Game State:
@@ -199,42 +202,43 @@ class Game {
      * * Score display
      * @param _clicked target square on the gameboard that the user clicked or the bot chose
      */
-    gameLoop(_clicked, _ai) {
+    Game.prototype.gameLoop = function (_clicked, _ai) {
+        var _this = this;
         if (!this.gameOver) {
             if (!_clicked.marked) {
-                const valueToMark = this.isPlayer1sTurn ? 'X' : 'O';
+                var valueToMark = this.isPlayer1sTurn ? 'X' : 'O';
                 if ((valueToMark === 'X' && _ai === false) || (valueToMark == 'O' && _ai == true)) {
                     this.isPlayer1sTurn = !this.isPlayer1sTurn;
                     this.turn++;
                     _clicked.placeMark(valueToMark);
                     // this.gameLog();
                     this.updateScoreboard();
-                    let backgroundClasses = [];
-                    this.winStates.forEach(condition => {
+                    var backgroundClasses_1 = [];
+                    this.winStates.forEach(function (condition) {
                         if (condition.getFullRow() == "XXX" || condition.getFullRow() == "OOO") {
                             condition.highlight();
-                            backgroundClasses.push(condition.strikethroughStyleClass);
+                            backgroundClasses_1.push(condition.strikethroughStyleClass);
                         }
                         if (condition.getFullRow() == "XXX") {
-                            if (!this.gameOver) {
-                                this.gameOver = true;
-                                this.setWinMessage(WinMessages.xWins);
-                                this.isPlayer1sTurn = !this.isPlayer1sTurn;
-                                this.xWinCount++;
-                                if (this.xWinCountElement)
-                                    this.xWinCountElement.innerText = this.xWinCount.toString();
-                                this.updateScoreboard();
+                            if (!_this.gameOver) {
+                                _this.gameOver = true;
+                                _this.setWinMessage(WinMessages.xWins);
+                                _this.isPlayer1sTurn = !_this.isPlayer1sTurn;
+                                _this.xWinCount++;
+                                if (_this.xWinCountElement)
+                                    _this.xWinCountElement.innerText = _this.xWinCount.toString();
+                                _this.updateScoreboard();
                             }
                         }
                         else if (condition.getFullRow() == "OOO") {
-                            if (!this.gameOver) {
-                                this.gameOver = true;
-                                this.setWinMessage(WinMessages.oWins);
-                                this.isPlayer1sTurn = !this.isPlayer1sTurn;
-                                this.oWinCount++;
-                                if (this.oWinCountElement)
-                                    this.oWinCountElement.innerText = this.oWinCount.toString();
-                                this.updateScoreboard();
+                            if (!_this.gameOver) {
+                                _this.gameOver = true;
+                                _this.setWinMessage(WinMessages.oWins);
+                                _this.isPlayer1sTurn = !_this.isPlayer1sTurn;
+                                _this.oWinCount++;
+                                if (_this.oWinCountElement)
+                                    _this.oWinCountElement.innerText = _this.oWinCount.toString();
+                                _this.updateScoreboard();
                             }
                         }
                     });
@@ -242,20 +246,20 @@ class Game {
                         this.setWinMessage(WinMessages.draw);
                         this.gameOver = true;
                     }
-                    backgroundClasses.forEach(classToAppend => {
+                    backgroundClasses_1.forEach(function (classToAppend) {
                         var _a;
-                        const strikethrough = document.createElement("span");
+                        var strikethrough = document.createElement("span");
                         strikethrough.classList.add('gameboard__strikethrough', classToAppend);
-                        strikethrough.addEventListener("click", () => {
-                            this.gameReset();
+                        strikethrough.addEventListener("click", function () {
+                            _this.gameReset();
                         });
-                        (_a = this.gameboardElement) === null || _a === void 0 ? void 0 : _a.appendChild(strikethrough);
+                        (_a = _this.gameboardElement) === null || _a === void 0 ? void 0 : _a.appendChild(strikethrough);
                     });
                     if (valueToMark === 'X' && !this.gameOver && !this.testing) {
-                        const BotTurn = this.AI.generateMove(this.board);
-                        if (BotTurn)
-                            setTimeout(() => {
-                                this.gameLoop(BotTurn, true);
+                        var BotTurn_1 = this.AI.generateMove(this.board);
+                        if (BotTurn_1)
+                            setTimeout(function () {
+                                _this.gameLoop(BotTurn_1, true);
                             }, 1000);
                     }
                 }
@@ -264,23 +268,23 @@ class Game {
         else {
             this.gameReset();
         }
-    }
-    setWinMessage(message) {
+    };
+    Game.prototype.setWinMessage = function (message) {
         if (this.message)
             this.message.innerText = message;
-    }
-    updateScoreboard() {
-        const mark = `scoreboard__player-${this.isPlayer1sTurn ? 'x' : 'o'}`;
-        const styleClass = this.gameOver ? 'scoreboard__player-turn-indicator_won' : 'scoreboard__player-turn-indicator_active';
-        for (let i = 0; i < this.playerIndicators.length; i++) {
-            const player = this.playerIndicators[i];
+    };
+    Game.prototype.updateScoreboard = function () {
+        var mark = "scoreboard__player-" + (this.isPlayer1sTurn ? 'x' : 'o');
+        var styleClass = this.gameOver ? 'scoreboard__player-turn-indicator_won' : 'scoreboard__player-turn-indicator_active';
+        for (var i = 0; i < this.playerIndicators.length; i++) {
+            var player = this.playerIndicators[i];
             player.classList.remove('scoreboard__player-turn-indicator_active');
             player.classList.remove('scoreboard__player-turn-indicator_won');
             if (player.id === mark) {
                 player.classList.add(styleClass);
             }
         }
-    }
+    };
     /**
      * Outputs table that represents the game state for debugging:
      * call game.gameLog() from the console!
@@ -289,12 +293,13 @@ class Game {
      * p4 | p5 | p6
      * p7 | p8 | p9
      */
-    gameLog() {
+    Game.prototype.gameLog = function () {
         console.table([
             [this.p1.value, this.p2.value, this.p3.value],
             [this.p4.value, this.p5.value, this.p6.value],
             [this.p7.value, this.p8.value, this.p9.value]
         ]);
-    }
-}
-const game = new Game();
+    };
+    return Game;
+}());
+var game = new Game();
